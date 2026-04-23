@@ -11,8 +11,8 @@ base {
 }
 
 repositories {
-    mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
+    mavenCentral()
 }
 
 dependencies {
@@ -23,32 +23,34 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', project.version
+    inputs.property "version", project.version
 
-    filesMatching('fabric.mod.json') {
-        expand 'version': project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
     }
 }
 
-def targetJavaVersion = 21
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    withSourcesJar()
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.release = targetJavaVersion
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
-    from('LICENSE') {
+    inputs.property "archivesName", project.base.archivesName.get()
+
+    from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
     }
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create("mavenJava", MavenPublication) {
             artifactId = project.archives_base_name
             from components.java
         }
