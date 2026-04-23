@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repo
@@ -20,11 +20,8 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Build mod
-        run: ./gradlew build
+        run: .\gradlew.bat build
 
       - name: Upload jar
         uses: actions/upload-artifact@v4
