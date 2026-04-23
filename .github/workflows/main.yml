@@ -8,28 +8,38 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
 
-      - name: Build mod
-        run: .\gradlew.bat build --stacktrace
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 8.10.2
 
-      - name: Show build folder
+      - name: Build mod
+        run: gradle build --stacktrace
+
+      - name: Show build outputs
         run: |
-          if (Test-Path build) { Get-ChildItem -Recurse build }
-          else { Write-Host "build folder not found" }
+          ls -R
+          echo "---- build ----"
+          ls -R build || true
+          echo "---- libs ----"
+          ls -R build/libs || true
 
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:
           name: mod-jar
-          path: build/libs/*.jar
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
