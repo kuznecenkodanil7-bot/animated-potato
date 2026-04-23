@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'raidpunish-fabric-1.21.11'
+rootProject.name = "raidpunish"
